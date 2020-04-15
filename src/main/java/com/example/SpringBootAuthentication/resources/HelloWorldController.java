@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class HelloWorld {
+public class HelloWorldController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
