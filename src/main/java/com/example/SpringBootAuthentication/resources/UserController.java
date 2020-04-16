@@ -7,6 +7,7 @@ import com.example.SpringBootAuthentication.services.MyUserDetailsService;
 import com.example.SpringBootAuthentication.services.UserServiceImpl;
 import com.example.SpringBootAuthentication.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-public class HelloWorldController {
+public class UserController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -39,6 +40,11 @@ public class HelloWorldController {
         return userServiceImpl.findAll();
     }
 
+    @GetMapping("/email/{email}")
+    public User userByEmail(@PathVariable String email){
+        return userServiceImpl.findByEmail(email);
+    }
+    
     @GetMapping("/hello")
     public String hello(){
         return "Hello World";
