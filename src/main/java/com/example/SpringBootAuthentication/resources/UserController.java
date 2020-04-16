@@ -7,17 +7,16 @@ import com.example.SpringBootAuthentication.services.MyUserDetailsService;
 import com.example.SpringBootAuthentication.services.UserServiceImpl;
 import com.example.SpringBootAuthentication.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -40,14 +39,47 @@ public class UserController {
         return userServiceImpl.findAll();
     }
 
-    @GetMapping("/email/{email}")
-    public User userByEmail(@PathVariable String email){
-        return userServiceImpl.findByEmail(email);
+    @GetMapping("/users/id/{id}")
+    public Optional<User> getUserById(@PathVariable int id){
+        Optional<User> user = userServiceImpl.findById(id);
+        if (user == null){
+            throw new RuntimeException("Employee is not found - " + user);
+        }
+        return user;
     }
-    
-    @GetMapping("/hello")
-    public String hello(){
-        return "Hello World";
+
+
+    @GetMapping("/users/email/{email}")
+    public Optional<User> userByEmail(@PathVariable String email){
+        Optional<User> user = userServiceImpl.findByEmail(email);
+        if (user == null){
+            throw new RuntimeException("Employee is not found - " + user);
+        }
+        return user;
+    }
+
+    @PostMapping("/users")
+    public User addEmployee(@RequestBody User user){
+        user.setId(0);
+        userServiceImpl.save(user);
+        return user;
+    }
+
+    @PutMapping("/users")
+    public User updateEmployee(@RequestBody User user){
+        userServiceImpl.save(user);
+        return user;
+    }
+
+    @DeleteMapping("/users/{id}")
+    public String updateEmployee(@PathVariable int id){
+        Optional<User> tempUser = userServiceImpl.findById(id);
+
+        if(tempUser == null){
+            throw new RuntimeException("Employee id not found - " + id);
+        }
+        userServiceImpl.deleteById(id);
+        return "Deleted employee id - " + id;
     }
 
     @PostMapping("/authenticate")
