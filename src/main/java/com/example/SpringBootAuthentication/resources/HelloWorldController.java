@@ -1,8 +1,10 @@
 package com.example.SpringBootAuthentication.resources;
 
+import com.example.SpringBootAuthentication.entity.User;
 import com.example.SpringBootAuthentication.models.AuthenticationRequest;
 import com.example.SpringBootAuthentication.models.AuthenticationResponse;
 import com.example.SpringBootAuthentication.services.MyUserDetailsService;
+import com.example.SpringBootAuthentication.services.UserServiceImpl;
 import com.example.SpringBootAuthentication.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +13,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class HelloWorldController {
@@ -23,7 +28,16 @@ public class HelloWorldController {
     private MyUserDetailsService userDetailsService;
 
     @Autowired
+    private UserServiceImpl userServiceImpl;
+
+    @Autowired
     private JwtUtil jwtTokenUtil;
+
+
+    @GetMapping("/users")
+    public List<User> listUsers(){
+        return userServiceImpl.findAll();
+    }
 
     @GetMapping("/hello")
     public String hello(){
