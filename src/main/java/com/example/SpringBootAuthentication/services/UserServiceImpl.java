@@ -1,5 +1,6 @@
 package com.example.SpringBootAuthentication.services;
 
+import com.example.SpringBootAuthentication.dao.UserNotPassword;
 import com.example.SpringBootAuthentication.dao.UserRepository;
 import com.example.SpringBootAuthentication.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +19,15 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+
     @Override
-    public List<User> findAll(){
-        return userRepository.findAll();
+    public List<UserNotPassword> findAll(){
+        return userRepository.findAllProjectedBy();
+    }
+
+    @Override
+    public Optional<UserNotPassword> findProjectedByEmail(String email) {
+        return userRepository.findProjectedByEmail(email);
     }
 
     @Override
@@ -29,8 +36,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(int id) {
-        return userRepository.findById(id);
+    public Optional<UserNotPassword> findById(int id) {
+        return userRepository.findProjectedById(id);
     }
 
     @Override

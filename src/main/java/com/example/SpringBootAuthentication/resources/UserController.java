@@ -1,5 +1,6 @@
 package com.example.SpringBootAuthentication.resources;
 
+import com.example.SpringBootAuthentication.dao.UserNotPassword;
 import com.example.SpringBootAuthentication.entity.User;
 import com.example.SpringBootAuthentication.models.AuthenticationRequest;
 import com.example.SpringBootAuthentication.models.AuthenticationResponse;
@@ -35,25 +36,25 @@ public class UserController {
 
 
     @GetMapping("/users")
-    public List<User> listUsers(){
+    public List<UserNotPassword> getUsers(){
         return userServiceImpl.findAll();
     }
 
     @GetMapping("/users/id/{id}")
-    public Optional<User> getUserById(@PathVariable int id){
-        Optional<User> user = userServiceImpl.findById(id);
+    public Optional<UserNotPassword> getUserById(@PathVariable int id){
+        Optional<UserNotPassword> user = userServiceImpl.findById(id);
         if (user == null){
-            throw new RuntimeException("Employee is not found - " + user);
+            throw new RuntimeException("User is not found - " + user);
         }
         return user;
     }
 
 
     @GetMapping("/users/email/{email}")
-    public Optional<User> userByEmail(@PathVariable String email){
-        Optional<User> user = userServiceImpl.findByEmail(email);
+    public Optional<UserNotPassword> getUserByEmail(@PathVariable String email){
+        Optional<UserNotPassword> user = userServiceImpl.findProjectedByEmail(email);
         if (user == null){
-            throw new RuntimeException("Employee is not found - " + user);
+            throw new RuntimeException("User is not found - " + user);
         }
         return user;
     }
@@ -73,13 +74,13 @@ public class UserController {
 
     @DeleteMapping("/users/{id}")
     public String updateEmployee(@PathVariable int id){
-        Optional<User> tempUser = userServiceImpl.findById(id);
+        Optional<UserNotPassword> tempUser = userServiceImpl.findById(id);
 
         if(tempUser == null){
-            throw new RuntimeException("Employee id not found - " + id);
+            throw new RuntimeException("User id not found - " + id);
         }
         userServiceImpl.deleteById(id);
-        return "Deleted employee id - " + id;
+        return "Deleted User id - " + id;
     }
 
     @PostMapping("/authenticate")
@@ -91,6 +92,7 @@ public class UserController {
         }catch (BadCredentialsException e){
             throw new Exception("Incorrect username or password", e);
         }
+        
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
